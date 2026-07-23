@@ -35,7 +35,7 @@ That unanswered question is the **execution gap**. Actenon closes it.
 | Repo | Role | Depends on | Badges |
 |---|---|---|---|
 | [**`actenon-protocol`**](https://github.com/Actenon/actenon-protocol) | The neutral wire contract. Zero dependencies. | *nothing* | [![PyPI](https://img.shields.io/pypi/v/actenon-protocol?label=PyPI)](https://pypi.org/project/actenon-protocol/) [![npm](https://img.shields.io/npm/v/@actenon/protocol-types?label=npm)](https://www.npmjs.com/package/@actenon/protocol-types) |
-| [**`actenon-kernel`**](https://github.com/Actenon/actenon-kernel) | The open verifier. Verifies proofs at the execution edge; issues no grants; runs no policy decisions. | `actenon-protocol` | [![PyPI](https://img.shields.io/pypi/v/actenon-kernel?label=PyPI)](https://pypi.org/project/actenon-kernel/) [![Conformance](https://img.shields.io/badge/Conformance-1.0.0-51%20vectors-success.svg)](https://github.com/Actenon/actenon-kernel/blob/main/CONFORMANCE.md) |
+| [**`actenon-kernel`**](https://github.com/Actenon/actenon-kernel) | The open verifier. Verifies proofs at the execution edge; issues no grants; runs no policy decisions. | `actenon-protocol` | [![PyPI](https://img.shields.io/pypi/v/actenon-kernel?label=PyPI)](https://pypi.org/project/actenon-kernel/) [![Conformance](https://img.shields.io/badge/Conformance-1.0.0-51%20vectors-success.svg)](https://github.com/Actenon/actenon-kernel/blob/main/docs/CONFORMANCE.md) |
 | [**`actenon-permit`**](https://github.com/Actenon/actenon-permit) | The developer on-ramp + authority broker. Issues signed grants, runs the PDP, brokers credentials. | `actenon-kernel`, `actenon-protocol` | [![PyPI](https://img.shields.io/pypi/v/actenon-permit?label=PyPI)](https://pypi.org/project/actenon-permit/) [![npm](https://img.shields.io/npm/v/@actenon/sdk?label=npm)](https://www.npmjs.com/package/@actenon/sdk) |
 | [**`actenon-cloud`**](https://github.com/Actenon/actenon-cloud) | The optional managed control plane. Multi-tenant, hosted, 9-layer evidence bundles. | `actenon-kernel`, `actenon-permit` | [![Optional](https://img.shields.io/badge/Deployment-optional-2ea44f.svg)](https://github.com/Actenon/actenon-cloud) |
 | [**`actenon-scan`**](https://github.com/Actenon/actenon-scan) | The independent scanner. Finds the execution gap in any codebase. Zero dependencies. | *nothing* | [![PyPI](https://img.shields.io/pypi/v/actenon-scan?label=PyPI)](https://pypi.org/project/actenon-scan/) [![GitHub Action](https://img.shields.io/badge/GitHub%20Action-v1-blue.svg)](https://github.com/Actenon/actenon-scan#github-action) |
@@ -76,10 +76,10 @@ Every SDK runs against the same 51 conformance vectors in the Kernel. Conformanc
 
 ## See also
 
-- [The Execution Gap](https://github.com/Actenon/actenon-kernel/blob/main/THE_EXECUTION_GAP.md) — the canonical problem statement
-- [Kernel Guarantees](https://github.com/Actenon/actenon-kernel/blob/main/KERNEL_GUARANTEES.md) — what the OSS kernel does and does not guarantee
-- [Compliance Mapping](https://github.com/Actenon/actenon-kernel/blob/main/COMPLIANCE_MAPPING.md) — OWASP LLM/Agentic + NIST AI RMF mappings
-- [Insurer Clarity](https://github.com/Actenon/actenon-cloud/blob/main/INSURER_CLARITY.md) — three separate questions, honestly answered
+- [The Execution Gap](https://github.com/Actenon/actenon-kernel/blob/main/docs/THE_EXECUTION_GAP.md) — the canonical problem statement
+- [Kernel Guarantees](https://github.com/Actenon/actenon-kernel/blob/main/docs/KERNEL_GUARANTEES.md) — what the OSS kernel does and does not guarantee
+- [Compliance Mapping](https://github.com/Actenon/actenon-kernel/blob/main/docs/COMPLIANCE_MAPPING.md) — OWASP LLM/Agentic + NIST AI RMF mappings
+- [Insurer Clarity](https://github.com/Actenon/actenon-permit/blob/main/docs/INSURER_CLARITY.md) — three separate questions, honestly answered
 
 ## License
 
