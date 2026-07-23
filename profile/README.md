@@ -83,4 +83,5 @@ Every SDK runs against the same 51 conformance vectors in the Kernel. Conformanc
 
 ## License
 
-Apache-2.0 across all five repositories.
+The four open components — Protocol, Kernel, Permit and Scan — are Apache-2.0.
+actenon-cloud is source-available; see its LICENSE.
