@@ -4,7 +4,7 @@
 
 Every repo in the Actenon ecosystem carries this badge:
 
-[![Claims: machine-verified](https://img.shields.io/badge/claims-machine--verified-2ea44f.svg)](https://github.com/Actenon/actenon-kernel/actions/workflows/verify-claims.yml)
+[![claims: machine-verified](https://img.shields.io/github/actions/workflow/status/Actenon/actenon-kernel/verify-claims.yml?branch=main&label=claims%3A%20machine-verified)](https://github.com/Actenon/actenon-kernel/actions/workflows/verify-claims.yml)
 
 It is not decoration. It links to a CI workflow named `verify-claims.yml`
 that fails — on every PR, every push to `main`, and once a day — if any
@@ -84,6 +84,11 @@ This is not theoretical. In the last review cycle alone:
   kernel's invariants gate now makes that class of gap a hard CI failure.
 - A dependency restructure upstream broke three consumer repos' CI within
   minutes of publishing — and the gates, not a user, were what caught it.
+- The badge itself. The first version of this badge was a *static* green
+  image sitting above the sentence "if a claim drifts, the badge goes red."
+  A hardcoded badge can never go red. It now renders live workflow status.
+  We caught it by checking our own advert against its own standard, which
+  is the only reason any of this works.
 
 Each of these is written up, unedited, in the repos' `FINDINGS.md` files.
 Findings are append-only: when a conclusion is reversed, a resolution block
