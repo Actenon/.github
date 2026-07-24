@@ -73,9 +73,11 @@ Every SDK runs against the same 51 conformance vectors in the Kernel. Conformanc
 8. **Conformance, not pedigree.** A third-party proof that conforms to the Kernel's conformance vectors will be accepted by the Kernel verifier, regardless of who issued it.
 9. **Vendor-neutral by design.** Scan recognises 30+ non-Actenon guard patterns. The Protocol is implementable by any vendor. Cloud is optional. No lock-in.
 10. **Source-disciplined incident reconstruction.** Pattern language only. No uncited facts about named incidents.
+11. **Claims are machine-verified.** Every repo carries a [`claims: machine-verified`](https://github.com/Actenon/actenon-kernel/actions/workflows/verify-claims.yml) badge linking to a CI gate that fails if any factual README claim — dependency counts, conformance counts, install commands, readiness ratings — stops being true. [How it works.](https://github.com/Actenon/.github/blob/main/posts/how-we-machine-verify-every-readme-claim.md)
 
 ## See also
 
+- [How we machine-verify every claim in our README](https://github.com/Actenon/.github/blob/main/posts/how-we-machine-verify-every-readme-claim.md) — why every repo's README is a tested surface
 - [The Execution Gap](https://github.com/Actenon/actenon-kernel/blob/main/docs/THE_EXECUTION_GAP.md) — the canonical problem statement
 - [Kernel Guarantees](https://github.com/Actenon/actenon-kernel/blob/main/docs/KERNEL_GUARANTEES.md) — what the OSS kernel does and does not guarantee
 - [Compliance Mapping](https://github.com/Actenon/actenon-kernel/blob/main/docs/COMPLIANCE_MAPPING.md) — OWASP LLM/Agentic + NIST AI RMF mappings
