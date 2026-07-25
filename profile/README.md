@@ -2,6 +2,8 @@
 
 > Authority enforcement and verifiable evidence for autonomous systems. An agent shouldn't be able to take a consequential action without scoped, signed authority for that exact action — and every action should leave proof a third party can verify.
 
+> **Guarantee precondition:** the edge guarantee holds when the protected edge is the only path to the resource, the backend accepts only brokered credentials issued after verification, and the agent has no standing credential or alternate route. Actenon still refuses invalid proofs if those conditions are not met — but it cannot prevent a caller that bypasses the protected edge from reaching the resource. Full scope in [`actenon-kernel/docs/SCOPE_AND_GUARANTEES.md`](https://github.com/Actenon/actenon-kernel/blob/main/docs/SCOPE_AND_GUARANTEES.md).
+
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/Actenon/actenon-kernel/blob/main/LICENSE)
 [![Ecosystem: 5 repos](https://img.shields.io/badge/Ecosystem-5%20repos-orange.svg)](#the-actenon-ecosystem)
 [![Languages: Py · TS · Go · Rust](https://img.shields.io/badge/Languages-Py%20%C2%B7%20TS%20%C2%B7%20Go%20%C2%B7%20Rust-blue.svg)](#multi-language-sdks)
