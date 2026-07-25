@@ -5,7 +5,7 @@
 > **Guarantee precondition:** the edge guarantee holds when the protected edge is the only path to the resource, the backend accepts only brokered credentials issued after verification, and the agent has no standing credential or alternate route. Actenon still refuses invalid proofs if those conditions are not met — but it cannot prevent a caller that bypasses the protected edge from reaching the resource. Full scope in [`actenon-kernel/docs/SCOPE_AND_GUARANTEES.md`](https://github.com/Actenon/actenon-kernel/blob/main/docs/SCOPE_AND_GUARANTEES.md).
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/Actenon/actenon-kernel/blob/main/LICENSE)
-[![Ecosystem: 5 repos](https://img.shields.io/badge/Ecosystem-5%20repos-orange.svg)](#the-actenon-ecosystem)
+[![Ecosystem: 7 repos](https://img.shields.io/badge/Ecosystem-7%20repos-orange.svg)](#the-actenon-ecosystem)
 [![Languages: Py · TS · Go · Rust](https://img.shields.io/badge/Languages-Py%20%C2%B7%20TS%20%C2%B7%20Go%20%C2%B7%20Rust-blue.svg)](#multi-language-sdks)
 [![Stance: open & vendor-neutral](https://img.shields.io/badge/Stance-open%20%26%20vendor--neutral-2ea44f.svg)](#principles)
 
@@ -41,6 +41,8 @@ That unanswered question is the **execution gap**. Actenon closes it.
 | [**`actenon-permit`**](https://github.com/Actenon/actenon-permit) | The developer on-ramp + authority broker. Issues signed grants, runs the PDP, brokers credentials. | `actenon-kernel`, `actenon-protocol` | [![PyPI](https://img.shields.io/pypi/v/actenon-permit?label=PyPI)](https://pypi.org/project/actenon-permit/) [![npm](https://img.shields.io/npm/v/@actenon/sdk?label=npm)](https://www.npmjs.com/package/@actenon/sdk) |
 | [**`actenon-cloud`**](https://github.com/Actenon/actenon-cloud) | The optional managed control plane. Multi-tenant, hosted, 9-layer evidence bundles. | `actenon-kernel`, `actenon-permit` | [![Optional](https://img.shields.io/badge/Deployment-optional-2ea44f.svg)](https://github.com/Actenon/actenon-cloud) |
 | [**`actenon-scan`**](https://github.com/Actenon/actenon-scan) | The independent scanner. Finds the execution gap in any codebase. Zero dependencies. | *nothing* | [![PyPI](https://img.shields.io/pypi/v/actenon-scan?label=PyPI)](https://pypi.org/project/actenon-scan/) [![GitHub Action](https://img.shields.io/badge/GitHub%20Action-v1-blue.svg)](https://github.com/Actenon/actenon-scan#github-action) |
+| [**`sdk-go`**](https://github.com/Actenon/sdk-go) | Go verifier SDK. Protected-endpoint proof verification in Go HTTP services. |  | [![Go](https://img.shields.io/badge/Go-v1.0.0-00ADD8.svg)](https://github.com/Actenon/sdk-go/releases/tag/v1.0.0) |
+| [**`sdk-rust`**](https://github.com/Actenon/sdk-rust) | Rust verifier SDK. Protected-endpoint proof verification in systems components. |  | [![Rust](https://img.shields.io/badge/Rust-v0.1.0-CE422B.svg)](https://github.com/Actenon/sdk-rust/releases/tag/v0.1.0) |
 
 ### How to choose where to start
 
@@ -57,9 +59,9 @@ That unanswered question is the **execution gap**. Actenon closes it.
 | Language | Package | Use case |
 |---|---|---|
 | **Python** | `pip install actenon-permit` · `pip install actenon-kernel` · `pip install actenon-protocol` · `pip install actenon-scan` (all on PyPI) | Reference implementation. Full kernel: minter, verifier, executor, CLI, conformance. |
-| **TypeScript** | `npm install @actenon/sdk` (v1.4.0) · `npm install @actenon/protocol-types` (v1.0.0) | Discriminated result types, receipt verification, protocol parity with Python. |
-| **Go** | [sdk/go/](https://github.com/Actenon/actenon-kernel/tree/main/sdk/go) | Verifier-edge proof checking in Go HTTP services. |
-| **Rust** | [sdk/rust/](https://github.com/Actenon/actenon-kernel/tree/main/sdk/rust) | Verifier-edge proof checking in systems components. |
+| **TypeScript** | `npm install @actenon/sdk` (v1.4.0) · `npm install @actenon/protocol-types` (v1.3.0) | Discriminated result types, receipt verification, protocol parity with Python. |
+| **Go** | `go get github.com/actenon/sdk-go@v1.0.0` | Verifier-edge proof checking in Go HTTP services. |
+| **Rust** | `cargo add --git https://github.com/Actenon/sdk-rust` (crates.io pending) | Verifier-edge proof checking in systems components. |
 
 Every SDK runs against the same 51 conformance vectors in the Kernel. Conformance, not pedigree, decides validity.
 
