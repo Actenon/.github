@@ -4,7 +4,7 @@
 
 > **Guarantee precondition:** the edge guarantee holds when the protected edge is the only path to the resource, the backend accepts only brokered credentials issued after verification, and the agent has no standing credential or alternate route. Actenon still refuses invalid proofs if those conditions are not met — but it cannot prevent a caller that bypasses the protected edge from reaching the resource. Full scope in [`actenon-kernel/docs/SCOPE_AND_GUARANTEES.md`](https://github.com/Actenon/actenon-kernel/blob/main/docs/SCOPE_AND_GUARANTEES.md).
 
-> **The product line:** Actenon is the protocol layer of the proof stack. The product line — BootProof, Receipt Gate, repo-proofer, WorkProof — lives at [github.com/bootproof](https://github.com/bootproof). Front door: **[bootproof.github.io](https://bootproof.github.io)**.
+> **The product line:** Actenon is the protocol layer of the proof stack.
 
 
 
