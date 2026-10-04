@@ -1,97 +1,658 @@
 # Actenon
 
-> Authority enforcement and verifiable evidence for autonomous systems. An agent shouldn't be able to take a consequential action without scoped, signed authority for that exact action — and every action should leave proof a third party can verify.
+### Control what AI agents are allowed to do — all the way to execution.
 
-> **Guarantee precondition:** the edge guarantee holds when the protected edge is the only path to the resource, the backend accepts only brokered credentials issued after verification, and the agent has no standing credential or alternate route. Actenon still refuses invalid proofs if those conditions are not met — but it cannot prevent a caller that bypasses the protected edge from reaching the resource. Full scope in [`actenon-kernel/docs/SCOPE_AND_GUARANTEES.md`](https://github.com/Actenon/actenon-kernel/blob/main/docs/SCOPE_AND_GUARANTEES.md).
+AI agents can now send messages, modify files, update databases, call APIs, deploy software, change permissions and take other actions with real-world consequences.
 
-> **The product line:** Actenon is the protocol layer of the proof stack.
+The problem is no longer just:
 
+> **Can this agent call this tool?**
 
+The harder questions are:
 
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/Actenon/actenon-kernel/blob/main/LICENSE)
-[![Ecosystem: 7 repos](https://img.shields.io/badge/Ecosystem-7%20repos-orange.svg)](#the-actenon-ecosystem)
-[![Languages: Py · TS · Go · Rust](https://img.shields.io/badge/Languages-Py%20%C2%B7%20TS%20%C2%B7%20Go%20%C2%B7%20Rust-blue.svg)](#multi-language-sdks)
-[![Stance: open & vendor-neutral](https://img.shields.io/badge/Stance-open%20%26%20vendor--neutral-2ea44f.svg)](#principles)
+> **What powers does this agent actually have?**  
+> **Did those powers change when the code changed?**  
+> **Was this exact action authorised?**  
+> **Is the action executing now still the action that was approved?**  
+> **Has this consequence already happened?**
+
+**Actenon is an open system for discovering, controlling and verifying machine authority.**
+
+Its developer-facing product is **Airlock**.
+
+Airlock discovers consequential powers from an agent's source code, turns those powers into enforceable authority, shows when authority changes, and controls consequential actions at runtime.
 
 ---
 
-## Start here
+## The problem: the execution gap
 
-```bash
-pip install actenon-scan && actenon-scan scan .
+Authentication can prove **who** is asking.
+
+Authorization can decide **what they are generally allowed to do**.
+
+Approval workflows can record **what somebody intended to approve**.
+
+But there is still a gap between:
+
+```text
+WHAT WAS INTENDED OR AUTHORISED
+                ↓
+        agent reasoning
+                ↓
+        tool / API request
+                ↓
+WHAT IS ACTUALLY ABOUT TO HAPPEN
 ```
 
-Find the execution gap in your own code in 10 seconds. Then:
+That is the **execution gap**.
 
-- **[`actenon-permit`](https://github.com/Actenon/actenon-permit)** — the reference enforcement demo. `pip install actenon-permit` → `permit demo`.
-- **[`actenon-kernel`](https://github.com/Actenon/actenon-kernel)** — the proof gate. The trust anchor that verifies every action at the execution edge.
-- **[`actenon-protocol`](https://github.com/Actenon/actenon-protocol)** — the wire contract. Zero dependencies, any language, any framework.
-- **[`actenon-cloud`](https://github.com/Actenon/actenon-cloud)** — the hosted control plane. Optional.
+For consequential systems, the execution boundary needs to answer a stricter question:
 
-## The problem
+> **Is this exact action, against this exact target, with these exact constraints, still within the authority that was reviewed and approved?**
 
-Modern agent stacks answer the upstream question — *should this requester be allowed to do this kind of thing?* — with authentication, policy engines, approval workflows, and audit logs. They still leave open the question the execution edge needs to answer:
+Actenon carries authority from source code and human review all the way to the execution boundary.
 
-> Is the exact action about to execute still the exact action that was authorized — for this endpoint, this tenant, this subject, this target, this scope, this time window, and this single execution attempt?
+---
 
-That unanswered question is the **execution gap**. Actenon closes it.
+# Airlock
 
-## The Actenon ecosystem
+**Airlock is the product developers use.**
 
-| Repo | Role | Depends on | Badges |
-|---|---|---|---|
-| [**`actenon-protocol`**](https://github.com/Actenon/actenon-protocol) | The neutral wire contract. Zero dependencies. | *nothing* | [![PyPI](https://img.shields.io/pypi/v/actenon-protocol?label=PyPI)](https://pypi.org/project/actenon-protocol/) [![npm](https://img.shields.io/npm/v/@actenon/protocol-types?label=npm)](https://www.npmjs.com/package/@actenon/protocol-types) |
-| [**`actenon-kernel`**](https://github.com/Actenon/actenon-kernel) | The open verifier. Verifies proofs at the execution edge; issues no grants; runs no policy decisions. | `actenon-protocol` | [![PyPI](https://img.shields.io/pypi/v/actenon-kernel?label=PyPI)](https://pypi.org/project/actenon-kernel/) [![Conformance](https://img.shields.io/badge/Conformance-1.0.0--51%20vectors-success.svg)](https://github.com/Actenon/actenon-kernel/blob/main/docs/CONFORMANCE.md) |
-| [**`actenon-permit`**](https://github.com/Actenon/actenon-permit) | The developer on-ramp + authority broker. Issues signed grants, runs the PDP, brokers credentials. | `actenon-kernel`, `actenon-protocol` | [![PyPI](https://img.shields.io/pypi/v/actenon-permit?label=PyPI)](https://pypi.org/project/actenon-permit/) [![npm](https://img.shields.io/npm/v/@actenon/sdk?label=npm)](https://www.npmjs.com/package/@actenon/sdk) |
-| [**`actenon-cloud`**](https://github.com/Actenon/actenon-cloud) | The optional managed control plane. Multi-tenant, hosted, 9-layer evidence bundles. | `actenon-kernel`, `actenon-permit` | [![Optional](https://img.shields.io/badge/Deployment-optional-2ea44f.svg)](https://github.com/Actenon/actenon-cloud) |
-| [**`actenon-scan`**](https://github.com/Actenon/actenon-scan) | The independent scanner. Finds the execution gap in any codebase. Zero dependencies. | *nothing* | [![PyPI](https://img.shields.io/pypi/v/actenon-scan?label=PyPI)](https://pypi.org/project/actenon-scan/) [![GitHub Action](https://img.shields.io/badge/GitHub%20Action-v1-blue.svg)](https://github.com/Actenon/actenon-scan#github-action) |
-| [**`sdk-go`**](https://github.com/Actenon/sdk-go) | Go verifier SDK. Protected-endpoint proof verification in Go HTTP services. |  | [![Go](https://img.shields.io/badge/Go-v1.0.0-00ADD8.svg)](https://github.com/Actenon/sdk-go/releases/tag/v1.0.0) |
-| [**`sdk-rust`**](https://github.com/Actenon/sdk-rust) | Rust verifier SDK. Protected-endpoint proof verification in systems components. |  | [![Rust](https://img.shields.io/badge/Rust-v0.1.0-CE422B.svg)](https://github.com/Actenon/sdk-rust/releases/tag/v0.1.0) |
+It connects five things that are normally separate:
 
-### How to choose where to start
+```text
+SOURCE CODE
+    ↓
+DISCOVER POWERS
+    ↓
+REVIEW AUTHORITY
+    ↓
+ENFORCE AT RUNTIME
+    ↓
+VERIFY THE EXACT ACTION
+    ↓
+RECORD WHAT HAPPENED
+```
 
-| If you are... | Start here | Why |
-|---|---|---|
-| An engineer evaluating Actenon for the first time | [`actenon-permit`](https://github.com/Actenon/actenon-permit) | The on-ramp. `Actenon.local()` gives you the full feature set in-process — no Cloud, no login. |
-| A security reviewer or auditor | [`actenon-kernel`](https://github.com/Actenon/actenon-kernel) | The trust anchor. 51 conformance vectors, public threat model, audit responses. |
-| A platform team deciding on a wire format | [`actenon-protocol`](https://github.com/Actenon/actenon-protocol) | The neutral contract. Zero dependencies. Any language, any framework, any cloud. |
-| A DevSecOps engineer who wants CI integration today | [`actenon-scan`](https://github.com/Actenon/actenon-scan) | Zero-dependency scanner with a GitHub Action that emits SARIF to the Security tab. |
-| A platform team that wants a hosted control plane | [`actenon-cloud`](https://github.com/Actenon/actenon-cloud) | Multi-tenant, 9-layer evidence bundles, insurer-facing clarity. **Optional** — everything else runs without it. |
+The goal is simple:
 
-## Multi-language SDKs
+> **A consequential action should not happen simply because an AI agent decided to attempt it.**
 
-| Language | Package | Use case |
-|---|---|---|
-| **Python** | `pip install actenon-permit` · `pip install actenon-kernel` · `pip install actenon-protocol` · `pip install actenon-scan` (all on PyPI) | Reference implementation. Full kernel: minter, verifier, executor, CLI, conformance. |
-| **TypeScript** | `npm install @actenon/sdk` (v1.4.0) · `npm install @actenon/protocol-types` (v1.3.0) | Discriminated result types, receipt verification, protocol parity with Python. |
-| **Go** | `go get github.com/actenon/sdk-go@v1.0.0` | Verifier-edge proof checking in Go HTTP services. |
-| **Rust** | `cargo add --git https://github.com/Actenon/sdk-rust` (crates.io pending) | Verifier-edge proof checking in systems components. |
+---
 
-Every SDK runs against the same 51 conformance vectors in the Kernel. Conformance, not pedigree, decides validity.
+## 1. Discover what the agent can do
 
-## Principles
+Airlock uses **Actenon Scan** to analyse source code and identify consequential capabilities.
 
-1. **The execution edge is the only trustworthy trust boundary.** Upstream controls matter; they are not the missing boundary.
-2. **Proof must be bound to the exact action.** Action name, target, tenant, subject, audience, scope, time window, single-use nonce. Any mutation is detected at the edge.
-3. **The Kernel does not issue grants or make policy decisions.** That's Permit's job. The Kernel verifies proofs at the edge and refuses on any failure.
-4. **The agent never holds the production credential.** The broker resolves it server-side after verification passes.
-5. **Submission is not execution.** A `submitted` state is non-final. `succeeded` requires a cryptographically verified receipt.
-6. **Cryptography proves execution integrity and authority-process integrity.** It does not prove business decision correctness. We are honest about which is which.
-7. **Every repo is independently adoptable.** The Kernel runs without Permit, Cloud, or Scan. Scan runs without anything. Protocol runs without anything. Cloud is optional. Permit runs without Cloud.
-8. **Conformance, not pedigree.** A third-party proof that conforms to the Kernel's conformance vectors will be accepted by the Kernel verifier, regardless of who issued it.
-9. **Vendor-neutral by design.** Scan recognises 30+ non-Actenon guard patterns. The Protocol is implementable by any vendor. Cloud is optional. No lock-in.
-10. **Source-disciplined incident reconstruction.** Pattern language only. No uncited facts about named incidents.
-11. **Claims are machine-verified.** Every repo carries a [`claims: machine-verified`](https://github.com/Actenon/actenon-kernel/actions/workflows/verify-claims.yml) badge linking to a CI gate that fails if any factual README claim — dependency counts, conformance counts, install commands, readiness ratings — stops being true. [How it works.](https://github.com/Actenon/.github/blob/main/posts/how-we-machine-verify-every-readme-claim.md)
+For example:
 
-## See also
+```text
+http.post
+    api.example.com/orders
 
-- [How we machine-verify every claim in our README](https://github.com/Actenon/.github/blob/main/posts/how-we-machine-verify-every-readme-claim.md) — why every repo's README is a tested surface
-- [The Execution Gap](https://github.com/Actenon/actenon-kernel/blob/main/docs/THE_EXECUTION_GAP.md) — the canonical problem statement
-- [Kernel Guarantees](https://github.com/Actenon/actenon-kernel/blob/main/docs/KERNEL_GUARANTEES.md) — what the OSS kernel does and does not guarantee
-- [Compliance Mapping](https://github.com/Actenon/actenon-kernel/blob/main/docs/COMPLIANCE_MAPPING.md) — OWASP LLM/Agentic + NIST AI RMF mappings
-- [Insurer Clarity](https://github.com/Actenon/actenon-permit/blob/main/docs/INSURER_CLARITY.md) — three separate questions, honestly answered
+github.issue.comment
+    acme/support
+
+filesystem.write
+    ./reports/**
+
+database.delete
+    production/customers
+```
+
+Where possible, authority is tied back to the source location that introduced it.
+
+If a target cannot be determined safely, Actenon does not silently widen it to `*`.
+
+Unknown authority remains unresolved or constrained until it can be reviewed safely.
+
+---
+
+## 2. Show when an agent gains new powers
+
+Ordinary code review answers:
+
+> What code changed?
+
+Airlock adds another question:
+
+> **What can the agent do now that it could not do before?**
+
+Example:
+
+```diff
+AIRLOCK AUTHORITY DIFF
+
++ github.repo.delete
+  acme/payments
+
++ database.delete
+  production/customers
+
+- github.issue.read
+  acme/support
+```
+
+A code change that silently increases an agent's authority becomes visible before deployment.
+
+This can also run in CI so a pull request can answer:
+
+> **Does this change give the agent new consequential powers?**
+
+---
+
+## 3. Turn discovered powers into authority
+
+Discovered capability is not automatically permission.
+
+Airlock turns reviewed powers into explicit authority.
+
+Authority can be limited by things such as:
+
+```text
+action
+target
+resource
+parameters
+time
+principal
+budget
+environment
+```
+
+For dynamic applications, authority can be bounded rather than reduced to an unsafe wildcard.
+
+For example:
+
+```text
+filesystem.write
+
+allowed:
+    ./reports/**
+```
+
+Then:
+
+```text
+./reports/result.md
+    → allowed
+
+/etc/passwd
+    → refused
+```
+
+The important rule is:
+
+> **Dynamic does not mean unlimited.**
+
+---
+
+## 4. Decide how much autonomy an agent gets
+
+Not every authorised action needs the same level of autonomy.
+
+A policy can distinguish between:
+
+```text
+ALLOW
+REQUIRE APPROVAL
+DENY
+```
+
+For example:
+
+```text
+refund ≤ £500
+    → autonomous
+
+refund £500–£10,000
+    → human approval
+
+refund > £10,000
+    → deny
+```
+
+Authority answers:
+
+> **May this agent ever do this?**
+
+Policy answers:
+
+> **May it do this autonomously right now?**
+
+Both must pass.
+
+---
+
+## 5. Bind approval to the exact action
+
+A human approval should not become a reusable blank cheque.
+
+If somebody approves:
+
+```text
+action:
+    refund
+
+payment:
+    txn_123
+
+amount:
+    £5,000
+```
+
+then changing the attempted action to:
+
+```text
+amount:
+    £9,000
+```
+
+requires different authority.
+
+Actenon binds execution proof to the consequential action being attempted rather than merely to the fact that somebody approved something earlier.
+
+---
+
+## 6. Verify at the execution boundary
+
+This is where **Actenon Kernel** operates.
+
+Before a protected side effect executes, the Kernel verifies the proof against the exact execution request.
+
+The proof can bind:
+
+```text
+action
+target
+tenant
+subject
+audience
+scope
+parameters
+time window
+single-use nonce
+authority reference
+```
+
+If the proof does not match the action about to execute:
+
+```text
+REFUSE
+```
+
+The Kernel does not make the business decision.
+
+It does not decide whether deleting a database row is sensible.
+
+Its job is narrower and more important:
+
+> **Verify that the action reaching the execution edge is the action that was actually authorised.**
+
+---
+
+## 7. Keep production credentials away from the agent
+
+Where Airlock brokers a protected resource, the agent does not need to hold the real production credential.
+
+Instead:
+
+```text
+AGENT
+  ↓
+requests consequential action
+  ↓
+AIRLOCK / PERMIT
+  ↓
+authority checked
+  ↓
+KERNEL
+  ↓
+proof verified
+  ↓
+credential released to protected boundary
+  ↓
+exact side effect
+```
+
+A denied action should therefore mean:
+
+```text
+credential released: NO
+execution occurred: NO
+```
+
+This reduces the value of simply persuading the model to make a different decision.
+
+---
+
+## 8. Prevent duplicate consequential effects
+
+An action can be authorised and still be unsafe to execute twice.
+
+For example:
+
+```text
+refund customer
+      ↓
+provider commits refund
+      ↓
+network response is lost
+      ↓
+agent retries
+```
+
+The second request must not automatically become a second refund.
+
+Actenon is designed to treat the real-world **effect** separately from the API call that requested it.
+
+Protected effects can be reserved before execution so concurrent or repeated attempts do not knowingly perform the same consequence twice.
+
+---
+
+## 9. Do not pretend an unknown outcome is a failure
+
+Distributed systems cannot always know whether a remote effect happened.
+
+After execution begins, a timeout may mean:
+
+```text
+the action failed
+```
+
+or:
+
+```text
+the action succeeded
+but the response was lost
+```
+
+Those are not the same state.
+
+Actenon's execution model distinguishes outcomes such as:
+
+```text
+COMMITTED
+
+NOT_EXECUTED
+
+AMBIGUOUS
+```
+
+An ambiguous effect must not be blindly retried until its real-world state has been reconciled.
+
+---
+
+## 10. Leave verifiable evidence
+
+Consequential attempts produce structured evidence.
+
+Depending on the boundary, evidence can include:
+
+```text
+source version
+
+authority manifest
+
+principal
+
+approval
+
+action
+
+target
+
+constraints
+
+proof
+
+credential decision
+
+execution outcome
+
+timestamp
+```
+
+Actenon's proof and receipt architecture is designed so evidence can be verified independently rather than requiring blind trust in the agent that performed the action.
+
+---
+
+# How Actenon fits together
+
+```text
+                         ACTENON AIRLOCK
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+           DISCOVER          CONTROL          EXECUTE
+              │                │                │
+              ▼                ▼                ▼
+            SCAN             PERMIT           KERNEL
+              │                │                │
+              └──────────────┬─┴────────────────┘
+                             │
+                          PROTOCOL
+                             │
+                ┌────────────┼────────────┐
+                ▼            ▼            ▼
+              Python         Go          Rust
+                        TypeScript
+```
+
+### Airlock
+
+The developer-facing product.
+
+Discovers authority, shows authority changes, coordinates approval and runtime enforcement, and produces execution evidence.
+
+### Scan
+
+The authority discovery engine.
+
+Analyses source code to identify consequential actions, targets and provenance.
+
+### Permit
+
+The authority broker and policy decision layer.
+
+Handles grants, constraints, approvals, delegation, budgets and credential brokering.
+
+### Kernel
+
+The execution-edge verifier.
+
+Checks whether the proof presented for an action actually authorises the action reaching the protected boundary.
+
+### Protocol
+
+The vendor-neutral wire contract.
+
+Defines portable proof, receipt, refusal and execution semantics independently of a particular framework or programming language.
+
+### SDKs
+
+Independent implementations allow protected services written in languages such as Python, TypeScript, Go and Rust to verify Actenon proofs at their own execution boundary.
+
+---
+
+# The chain Actenon protects
+
+The central Actenon invariant is:
+
+```text
+POWER FOUND IN CODE
+        =
+POWER REVIEWED
+        =
+AUTHORITY APPROVED
+        =
+ACTION POLICY EVALUATED
+        =
+ACTION PROOF AUTHORISED
+        =
+ACTION RESOURCE ACCEPTED
+        =
+CONSEQUENCE ACTUALLY EXECUTED
+```
+
+If those diverge, the protected action should not proceed.
+
+---
+
+# Example
+
+Suppose an agent currently has:
+
+```text
+github.issue.read
+github.issue.comment
+```
+
+A pull request adds:
+
+```text
+github.repo.delete
+```
+
+Airlock can surface:
+
+```text
+AIRLOCK AUTHORITY DIFF
+
+NEW POWER
+
++ github.repo.delete
+  acme/payments
+
+Status:
+BLOCKED UNTIL APPROVED
+```
+
+If the running agent later attempts that operation without the necessary authority:
+
+```text
+decision:
+    DENY
+
+credential released:
+    NO
+
+execution:
+    NOT_EXECUTED
+```
+
+The fact that the model decided to delete the repository is not sufficient authority to delete it.
+
+---
+
+# What Actenon is designed for
+
+Actenon matters when software can create real-world consequences.
+
+Examples include agents that can:
+
+- modify or delete data
+- send email or messages
+- create or modify GitHub resources
+- deploy software
+- execute shell commands
+- change infrastructure
+- modify files
+- grant or revoke access
+- interact with production APIs
+- issue payments or refunds
+- perform database mutations
+- trigger business workflows
+
+If an agent only reads information and produces text, much of this machinery may be unnecessary.
+
+The value appears when an agent is allowed to **act**.
+
+---
+
+# Trust boundary
+
+Actenon does not claim that a Python library can magically contain hostile arbitrary code.
+
+The strongest execution guarantee requires the protected execution edge to actually be the route to the resource.
+
+In particular:
+
+> **The protected edge must be the only permitted route to the resource, production credentials must remain outside the agent and be released only after verification, and the agent must not have an alternate path that bypasses enforcement.**
+
+If an agent already possesses an unrestricted production credential or another direct route to the resource, it may bypass any upstream enforcement system.
+
+For stronger threat models, execution therefore needs appropriate process, container, operating-system or resource-boundary isolation in addition to authority enforcement.
+
+Actenon is explicit about that boundary.
+
+---
+
+# Principles
+
+1. **Consequential capability is not authority.**  
+   Being technically able to invoke something does not mean an agent is permitted to invoke it.
+
+2. **Code changes can be authority changes.**  
+   A pull request can silently give an agent new powers even if nobody intended to change its permissions.
+
+3. **Dynamic authority must still be bounded.**  
+   Unknown values must never silently become wildcards.
+
+4. **Approval must bind to the action.**  
+   Changing the consequential action after approval requires different authority.
+
+5. **The execution edge is the final trust boundary.**  
+   Upstream controls matter, but the real side effect must still be independently checked.
+
+6. **The agent should not hold standing production credentials.**
+
+7. **Unknown is not failed.**  
+   An uncertain execution outcome must not trigger a blind retry.
+
+8. **One real-world effect should not knowingly happen twice.**
+
+9. **Refusal is better than false confidence.**
+
+10. **Evidence should be independently verifiable.**
+
+11. **Open protocols and conformance matter more than vendor pedigree.**
+
+---
+
+# Start here
+
+The long-term developer experience is deliberately simple:
+
+```bash
+airlock init
+airlock diff
+airlock run
+```
+
+Airlock is currently under active development.
+
+Repository:
+
+**[`Actenon/actenon-airlock`](https://github.com/Actenon/actenon-airlock)**
+
+You can also explore the underlying open components:
+
+- **[`actenon-scan`](https://github.com/Actenon/actenon-scan)** — discover consequential authority in source code
+- **[`actenon-permit`](https://github.com/Actenon/actenon-permit)** — authority, policy and credential brokering
+- **[`actenon-kernel`](https://github.com/Actenon/actenon-kernel)** — execution-edge proof verification
+- **[`actenon-protocol`](https://github.com/Actenon/actenon-protocol)** — vendor-neutral proof and execution contracts
+- **[`sdk-go`](https://github.com/Actenon/sdk-go)** — Go protected-boundary verifier
+- **[`sdk-rust`](https://github.com/Actenon/sdk-rust)** — Rust protected-boundary verifier
+
+---
+
+## The idea in one sentence
+
+> **Git tells you what code changed. Actenon tells you what your agent can do now — and carries that authority all the way to the consequential action.**
+
+---
 
 ## License
 
-The four open components — Protocol, Kernel, Permit and Scan — are Apache-2.0.
-actenon-cloud is source-available; see its LICENSE.
+Actenon's open components are released under the Apache-2.0 licence unless otherwise stated.
