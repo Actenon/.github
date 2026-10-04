@@ -1,6 +1,6 @@
 # Actenon
 
-### Control what AI agents are allowed to do — all the way to execution.
+### Control what AI agents are allowed to do - all the way to execution.
 
 AI agents can now send messages, modify files, update databases, call APIs, deploy software, change permissions and take other actions with real-world consequences.
 
